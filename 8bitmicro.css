@@ -5,15 +5,11 @@ html, body {
 }
 
 .controller.custom {
-  height: 220px;
-  width: 400px;
   position: relative;
-  background: linear-gradient(145deg, #6B73FF, #4C5AFF);
-  border-radius: 30px;
-  box-shadow:
-    0 15px 35px rgba(0, 0, 0, 0.4),
-    inset 0 2px 5px rgba(255, 255, 255, 0.2);
-  border: 3px solid #E0E0E0;
+  width: 480px;
+  height: 300px;
+  margin: 0 auto;
+  overflow: visible !important;
 }
 
 .controller.custom::before {
@@ -39,8 +35,6 @@ html, body {
   text-align: center;
 }
 
-/* D-pad, face buttons, shoulders, and start/back follow as in your original */
-
 .custom .dpad {
   position: absolute;
   width: 70px;
@@ -49,7 +43,6 @@ html, body {
   left: 30px;
 }
 
-/* D-pad face buttons (up, down, left, right) */
 .custom .face {
   position: absolute;
   background: #eee;
