@@ -1,14 +1,14 @@
 <style>
     .controller.custom {
-        height: 240px; /* Increased height to accommodate shoulder buttons fully inside */
-        width: 400px;
+        height: 170px;
+        width: 280px;
         position: relative;
         background: linear-gradient(145deg, #6B73FF, #4C5AFF);
-        border-radius: 30px;
+        border-radius: 20px;
         box-shadow:
-            0 15px 35px rgba(0, 0, 0, 0.4),
-            inset 0 2px 5px rgba(255, 255, 255, 0.2);
-        border: 3px solid #E0E0E0;
+            0 10px 25px rgba(0, 0, 0, 0.4),
+            inset 0 1px 3px rgba(255, 255, 255, 0.2);
+        border: 2px solid #E0E0E0;
         overflow: visible;
         position: absolute;
         top: 50%;
@@ -27,18 +27,18 @@
 
     .custom .bumpers {
         position: absolute;
-        width: 300px;
-        height: 25px;
-        top: 10px; /* Moved down from -5px to 10px to be inside the controller's top edge */
-        left: 50px;
+        width: 210px;
+        height: 18px;
+        top: 10px;
+        left: 35px;
     }
 
     .custom .bumper {
-        width: 60px;
-        height: 25px;
+        width: 42px;
+        height: 18px;
         background: linear-gradient(145deg, #E8E8E8, #D0D0D0);
-        border: 2px solid #B0B0B0;
-        border-radius: 8px 8px 3px 3px;
+        border: 1px solid #B0B0B0;
+        border-radius: 6px 6px 2px 2px;
         opacity: 0.7;
         transition: all 0.15s ease;
         cursor: pointer;
@@ -48,7 +48,7 @@
     .custom .bumper.pressed {
         opacity: 1;
         background: linear-gradient(145deg, #D0D0D0, #B8B8B8);
-        transform: translateY(2px);
+        transform: translateY(1px);
     }
 
     .custom .bumper.left {
@@ -61,16 +61,16 @@
 
     .custom .dpad {
         position: absolute;
-        width: 70px;
-        height: 70px;
-        top: 55px;
-        left: 30px;
+        width: 50px;
+        height: 50px;
+        top: 60px;
+        left: 20px;
     }
 
     .custom .face {
         position: absolute;
         background: linear-gradient(145deg, #F5F5F5, #E0E0E0);
-        border: 2px solid #C0C0C0;
+        border: 1px solid #C0C0C0;
         opacity: 0.8;
         transition: all 0.15s ease;
         cursor: pointer;
@@ -83,58 +83,58 @@
     }
 
     .custom .face.up {
-        left: 25px;
+        left: 17px;
         top: 0px;
-        width: 20px;
-        height: 25px;
-        border-radius: 8px 8px 3px 3px;
+        width: 14px;
+        height: 18px;
+        border-radius: 6px 6px 2px 2px;
     }
 
     .custom .face.down {
-        left: 25px;
+        left: 17px;
         bottom: 0px;
-        width: 20px;
-        height: 25px;
-        border-radius: 3px 3px 8px 8px;
+        width: 14px;
+        height: 18px;
+        border-radius: 2px 2px 6px 6px;
     }
 
     .custom .face.left {
-        width: 25px;
-        height: 20px;
-        top: 25px;
+        width: 18px;
+        height: 14px;
+        top: 17px;
         left: 0px;
-        border-radius: 8px 3px 3px 8px;
+        border-radius: 6px 2px 2px 6px;
     }
 
     .custom .face.right {
-        width: 25px;
-        height: 20px;
-        top: 25px;
+        width: 18px;
+        height: 14px;
+        top: 17px;
         right: 0px;
-        border-radius: 3px 8px 8px 3px;
+        border-radius: 2px 6px 6px 2px;
     }
 
     .custom .arrows {
         position: absolute;
-        width: 80px;
-        height: 30px;
-        top: 140px;
-        left: 160px;
+        width: 56px;
+        height: 21px;
+        top: 120px;
+        left: 112px;
     }
 
     .custom .back, .custom .start {
-        width: 30px;
-        height: 30px;
+        width: 21px;
+        height: 21px;
         opacity: 0.7;
         transition: all 0.15s ease;
         background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
-        border: 2px solid #2A35AA;
+        border: 1px solid #2A35AA;
         border-radius: 50%;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 8px;
         color: white;
         font-weight: bold;
         position: absolute;
@@ -152,7 +152,7 @@
 
     .custom .back::after {
         content: "★";
-        font-size: 14px;
+        font-size: 10px;
     }
 
     .custom .start {
@@ -161,22 +161,22 @@
 
     .custom .start::after {
         content: "⚏";
-        font-size: 12px;
+        font-size: 8px;
     }
 
     .custom .meta {
         position: absolute;
-        width: 120px;
-        height: 25px;
-        top: 45px;
-        left: 140px;
+        width: 84px;
+        height: 18px;
+        top: 50px;
+        left: 98px;
     }
 
     .custom .minus, .custom .plus {
-        width: 25px;
-        height: 25px;
+        width: 18px;
+        height: 18px;
         background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
-        border: 2px solid #2A35AA;
+        border: 1px solid #2A35AA;
         border-radius: 50%;
         opacity: 0.7;
         transition: all 0.15s ease;
@@ -186,7 +186,7 @@
         justify-content: center;
         color: white;
         font-weight: bold;
-        font-size: 16px;
+        font-size: 11px;
         position: absolute;
     }
 
@@ -214,10 +214,10 @@
 
     .custom .home {
         position: absolute;
-        width: 8px;
-        height: 8px;
-        top: 52px;
-        left: 196px;
+        width: 6px;
+        height: 6px;
+        top: 55px;
+        left: 137px;
         background: #2A35AA;
         border-radius: 50%;
         opacity: 0.8;
@@ -233,19 +233,19 @@
 
     .custom .abxy {
         position: absolute;
-        width: 90px;
-        height: 90px;
-        top: 50px;
-        left: 280px;
+        width: 63px;
+        height: 63px;
+        top: 65px;
+        left: 195px;
     }
 
     .custom .button {
         position: absolute;
-        width: 35px;
-        height: 35px;
+        width: 25px;
+        height: 25px;
         border-radius: 50%;
         background: linear-gradient(145deg, #F8F8F8, #E8E8E8);
-        border: 2px solid #D0D0D0;
+        border: 1px solid #D0D0D0;
         opacity: 0.8;
         transition: all 0.15s ease;
         cursor: pointer;
@@ -253,21 +253,21 @@
         align-items: center;
         justify-content: center;
         font-weight: bold;
-        font-size: 16px;
+        font-size: 11px;
         color: #666;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .custom .button.pressed {
         opacity: 1;
         background: linear-gradient(145deg, #E0E0E0, #D0D0D0);
         transform: scale(0.9);
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .custom .y {
         top: 0px;
-        left: 27px;
+        left: 19px;
     }
 
     .custom .y::after {
@@ -275,7 +275,7 @@
     }
 
     .custom .x {
-        top: 27px;
+        top: 19px;
         left: 0px;
     }
 
@@ -284,7 +284,7 @@
     }
 
     .custom .a {
-        top: 27px;
+        top: 19px;
         right: 0px;
     }
 
@@ -294,7 +294,7 @@
 
     .custom .b {
         bottom: 0px;
-        left: 27px;
+        left: 19px;
     }
 
     .custom .b::after {
