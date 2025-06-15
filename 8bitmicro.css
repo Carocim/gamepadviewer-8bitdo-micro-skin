@@ -1,619 +1,359 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>8BitDo Micro Controller - Gamepad Viewer</title>
-    <style>
-        body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 10px; /* Reduced padding from 40px to 10px */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden; /* Added to prevent scrollbars if content barely exceeds */
-        }
+<style>
+    .controller.custom {
+        height: 220px;
+        width: 400px;
+        position: relative;
+        background: linear-gradient(145deg, #6B73FF, #4C5AFF);
+        border-radius: 30px;
+        box-shadow:
+            0 15px 35px rgba(0, 0, 0, 0.4),
+            inset 0 2px 5px rgba(255, 255, 255, 0.2);
+        border: 3px solid #E0E0E0;
+        overflow: visible;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 
-        .demo-container {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px; /* Reduced padding from 40px to 20px */
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            margin-bottom: 10px; /* Reduced margin from 30px to 10px */
-            display: flex; /* Added flex to center controller within it easily */
-            flex-direction: column;
-            align-items: center;
-        }
+    .custom.disconnected {
+        opacity: 0.4;
+        filter: grayscale(100%);
+    }
 
-        h1 {
-            color: #fff;
-            text-align: center;
-            margin-bottom: 10px; /* Reduced margin from 30px to 10px */
-            font-size: 1.8em; /* Reduced font-size from 2.5em to 1.8em */
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            /* display: none; */ /* Uncomment this line to temporarily hide the H1 for testing */
-        }
+    .custom.disconnected div {
+        display: none;
+    }
 
-        .controller-demo {
-            display: flex;
-            justify-content: center;
-            margin: 10px 0; /* Reduced margin from 40px to 10px */
-            /* This is the container directly wrapping the controller */
-        }
+    .custom .bumpers {
+        position: absolute;
+        width: 300px;
+        height: 25px;
+        top: -5px;
+        left: 50px;
+    }
 
-        /* 8BitDo Micro Controller CSS for Gamepad Viewer */
-        .controller.custom {
-            height: 220px; /* Adjusted height to better fit the full controller (retained) */
-            width: 400px;
-            margin: 0px auto; /* Changed margin to 0px for tighter fit within .controller-demo */
-            position: relative;
-            background: linear-gradient(145deg, #6B73FF, #4C5AFF);
-            border-radius: 30px;
-            box-shadow:
-                0 15px 35px rgba(0, 0, 0, 0.4),
-                inset 0 2px 5px rgba(255, 255, 255, 0.2);
-            border: 3px solid #E0E0E0;
-            overflow: visible; /* Ensure content is not hidden if it extends slightly (retained) */
-        }
+    .custom .bumper {
+        width: 60px;
+        height: 25px;
+        background: linear-gradient(145deg, #E8E8E8, #D0D0D0);
+        border: 2px solid #B0B0B0;
+        border-radius: 8px 8px 3px 3px;
+        opacity: 0.7;
+        transition: all 0.15s ease;
+        cursor: pointer;
+        position: absolute;
+    }
 
-        /* Add 8BitDo branding */
-        .controller.custom::before {
-            content: "8BitDo";
-            position: absolute;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
+    .custom .bumper.pressed {
+        opacity: 1;
+        background: linear-gradient(145deg, #D0D0D0, #B8B8B8);
+        transform: translateY(2px);
+    }
 
-        .controller.custom::after {
-            content: "micro";
-            position: absolute;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-weight: normal;
-            font-size: 12px;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            padding-top: 2px;
-            width: 40px;
-            text-align: center;
-        }
+    .custom .bumper.left {
+        left: 0;
+    }
 
-        .custom.disconnected {
-            opacity: 0.4;
-            filter: grayscale(100%);
-        }
+    .custom .bumper.right {
+        right: 0;
+    }
 
-        .custom.disconnected div {
-            display: none;
-        }
+    .custom .dpad {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        top: 55px;
+        left: 30px;
+    }
 
-        /* Shoulder buttons at the top */
-        .custom .bumpers {
-            position: absolute;
-            width: 300px;
-            height: 25px;
-            top: -5px; /* Adjusted position to sit correctly with new controller height (retained) */
-            left: 50px;
-        }
+    .custom .face {
+        position: absolute;
+        background: linear-gradient(145deg, #F5F5F5, #E0E0E0);
+        border: 2px solid #C0C0C0;
+        opacity: 0.8;
+        transition: all 0.15s ease;
+        cursor: pointer;
+    }
 
-        .custom .bumper {
-            width: 60px;
-            height: 25px;
-            background: linear-gradient(145deg, #E8E8E8, #D0D0D0);
-            border: 2px solid #B0B0B0;
-            border-radius: 8px 8px 3px 3px;
-            opacity: 0.7;
-            transition: all 0.15s ease;
-            cursor: pointer;
-            position: absolute;
-        }
+    .custom .face.pressed {
+        opacity: 1;
+        background: linear-gradient(145deg, #E0E0E0, #C8C8C8);
+        transform: scale(0.95);
+    }
 
-        .custom .bumper.pressed {
-            opacity: 1;
-            background: linear-gradient(145deg, #D0D0D0, #B8B8B8);
-            transform: translateY(2px);
-        }
+    .custom .face.up {
+        left: 25px;
+        top: 0px;
+        width: 20px;
+        height: 25px;
+        border-radius: 8px 8px 3px 3px;
+    }
 
-        .custom .bumper.left {
-            left: 0;
-        }
+    .custom .face.down {
+        left: 25px;
+        bottom: 0px;
+        width: 20px;
+        height: 25px;
+        border-radius: 3px 3px 8px 8px;
+    }
 
-        .custom .bumper.right {
-            right: 0;
-        }
+    .custom .face.left {
+        width: 25px;
+        height: 20px;
+        top: 25px;
+        left: 0px;
+        border-radius: 8px 3px 3px 8px;
+    }
 
-        /* D-Pad positioning - left side */
-        .custom .dpad {
-            position: absolute;
-            width: 70px;
-            height: 70px;
-            top: 55px;
-            left: 30px;
-        }
+    .custom .face.right {
+        width: 25px;
+        height: 20px;
+        top: 25px;
+        right: 0px;
+        border-radius: 3px 8px 8px 3px;
+    }
 
-        .custom .face {
-            position: absolute;
-            background: linear-gradient(145deg, #F5F5F5, #E0E0E0);
-            border: 2px solid #C0C0C0;
-            opacity: 0.8;
-            transition: all 0.15s ease;
-            cursor: pointer;
-        }
+    .custom .arrows {
+        position: absolute;
+        width: 80px;
+        height: 30px;
+        top: 140px;
+        left: 160px;
+    }
 
-        .custom .face.pressed {
-            opacity: 1;
-            background: linear-gradient(145deg, #E0E0E0, #C8C8C8);
-            transform: scale(0.95);
-        }
+    .custom .back, .custom .start {
+        width: 30px;
+        height: 30px;
+        opacity: 0.7;
+        transition: all 0.15s ease;
+        background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
+        border: 2px solid #2A35AA;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: white;
+        font-weight: bold;
+        position: absolute;
+    }
 
-        .custom .face.up {
-            left: 25px;
-            top: 0px;
-            width: 20px;
-            height: 25px;
-            border-radius: 8px 8px 3px 3px;
-        }
+    .custom .back.pressed, .custom .start.pressed {
+        opacity: 1;
+        background: linear-gradient(145deg, #3D4BCC, #2A35AA);
+        transform: scale(0.9);
+    }
 
-        .custom .face.down {
-            left: 25px;
-            bottom: 0px;
-            width: 20px;
-            height: 25px;
-            border-radius: 3px 3px 8px 8px;
-        }
+    .custom .back {
+        left: 0;
+    }
 
-        .custom .face.left {
-            width: 25px;
-            height: 20px;
-            top: 25px;
-            left: 0px;
-            border-radius: 8px 3px 3px 8px;
-        }
+    .custom .back::after {
+        content: "★";
+        font-size: 14px;
+    }
 
-        .custom .face.right {
-            width: 25px;
-            height: 20px;
-            top: 25px;
-            right: 0px;
-            border-radius: 3px 8px 8px 3px;
-        }
+    .custom .start {
+        right: 0;
+    }
 
-        /* Start and Select buttons - center bottom */
-        .custom .arrows {
-            position: absolute;
-            width: 80px;
-            height: 30px;
-            top: 140px;
-            left: 160px;
-        }
+    .custom .start::after {
+        content: "⚏";
+        font-size: 12px;
+    }
 
-        .custom .back, .custom .start {
-            width: 30px;
-            height: 30px;
-            opacity: 0.7;
-            transition: all 0.15s ease;
-            background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
-            border: 2px solid #2A35AA;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: white;
-            font-weight: bold;
-            position: absolute;
-        }
+    .custom .meta {
+        position: absolute;
+        width: 120px;
+        height: 25px;
+        top: 45px;
+        left: 140px;
+    }
 
-        .custom .back.pressed, .custom .start.pressed {
-            opacity: 1;
-            background: linear-gradient(145deg, #3D4BCC, #2A35AA);
-            transform: scale(0.9);
-        }
+    .custom .minus, .custom .plus {
+        width: 25px;
+        height: 25px;
+        background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
+        border: 2px solid #2A35AA;
+        border-radius: 50%;
+        opacity: 0.7;
+        transition: all 0.15s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        position: absolute;
+    }
 
-        .custom .back {
-            left: 0;
-        }
+    .custom .minus.pressed, .custom .plus.pressed {
+        opacity: 1;
+        background: linear-gradient(145deg, #3D4BCC, #2A35AA);
+        transform: scale(0.9);
+    }
 
-        .custom .back::after {
-            content: "★";
-            font-size: 14px;
-        }
+    .custom .minus {
+        left: 0;
+    }
 
-        .custom .start {
-            right: 0;
-        }
+    .custom .minus::after {
+        content: "−";
+    }
 
-        .custom .start::after {
-            content: "⚏";
-            font-size: 12px;
-        }
+    .custom .plus {
+        right: 0;
+    }
 
-        /* Minus and Plus buttons */
-        .custom .meta {
-            position: absolute;
-            width: 120px;
-            height: 25px;
-            top: 45px;
-            left: 140px;
-        }
+    .custom .plus::after {
+        content: "+";
+    }
 
-        .custom .minus, .custom .plus {
-            width: 25px;
-            height: 25px;
-            background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
-            border: 2px solid #2A35AA;
-            border-radius: 50%;
-            opacity: 0.7;
-            transition: all 0.15s ease;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-            position: absolute;
-        }
+    .custom .home {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        top: 52px;
+        left: 196px;
+        background: #2A35AA;
+        border-radius: 50%;
+        opacity: 0.8;
+        transition: all 0.15s ease;
+        cursor: pointer;
+    }
 
-        .custom .minus.pressed, .custom .plus.pressed {
-            opacity: 1;
-            background: linear-gradient(145deg, #3D4BCC, #2A35AA);
-            transform: scale(0.9);
-        }
+    .custom .home.pressed {
+        opacity: 1;
+        background: #1A2577;
+        transform: scale(1.2);
+    }
 
-        .custom .minus {
-            left: 0;
-        }
+    .custom .abxy {
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        top: 50px;
+        left: 280px;
+    }
 
-        .custom .minus::after {
-            content: "−";
-        }
+    .custom .button {
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #F8F8F8, #E8E8E8);
+        border: 2px solid #D0D0D0;
+        opacity: 0.8;
+        transition: all 0.15s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+        color: #666;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-        .custom .plus {
-            right: 0;
-        }
+    .custom .button.pressed {
+        opacity: 1;
+        background: linear-gradient(145deg, #E0E0E0, #D0D0D0);
+        transform: scale(0.9);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
 
-        .custom .plus::after {
-            content: "+";
-        }
+    .custom .y {
+        top: 0px;
+        left: 27px;
+    }
 
-        /* Home button (center) */
-        .custom .home {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            top: 52px;
-            left: 196px;
-            background: #2A35AA;
-            border-radius: 50%;
-            opacity: 0.8;
-            transition: all 0.15s ease;
-            cursor: pointer;
-        }
+    .custom .y::after {
+        content: "Y";
+    }
 
-        .custom .home.pressed {
-            opacity: 1;
-            background: #1A2577;
-            transform: scale(1.2);
-        }
+    .custom .x {
+        top: 27px;
+        left: 0px;
+    }
 
-        /* Face buttons (A, B, X, Y) - right side */
-        .custom .abxy {
-            position: absolute;
-            width: 90px;
-            height: 90px;
-            top: 50px;
-            left: 280px;
-        }
+    .custom .x::after {
+        content: "X";
+    }
 
-        .custom .button {
-            position: absolute;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, #F8F8F8, #E8E8E8);
-            border: 2px solid #D0D0D0;
-            opacity: 0.8;
-            transition: all 0.15s ease;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 16px;
-            color: #666;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+    .custom .a {
+        top: 27px;
+        right: 0px;
+    }
 
-        .custom .button.pressed {
-            opacity: 1;
-            background: linear-gradient(145deg, #E0E0E0, #D0D0D0);
-            transform: scale(0.9);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
+    .custom .a::after {
+        content: "A";
+    }
 
-        .custom .y {
-            top: 0px;
-            left: 27px;
-        }
+    .custom .b {
+        bottom: 0px;
+        left: 27px;
+    }
 
-        .custom .y::after {
-            content: "Y";
-        }
+    .custom .b::after {
+        content: "B";
+    }
 
-        .custom .x {
-            top: 27px;
-            left: 0px;
-        }
+    .custom .triggers,
+    .custom .sticks {
+        display: none;
+    }
 
-        .custom .x::after {
-            content: "X";
-        }
+    .custom .p0 { transform: rotate(0deg); }
+    .custom .p1 { transform: rotate(90deg); }
+    .custom .p2 { transform: rotate(270deg); }
+    .custom .p3 { transform: rotate(180deg); }
 
-        .custom .a {
-            top: 27px;
-            right: 0px;
-        }
+    .custom .button:hover,
+    .custom .face:hover,
+    .custom .back:hover,
+    .custom .start:hover,
+    .custom .minus:hover,
+    .custom .plus:hover,
+    .custom .bumper:hover,
+    .custom .home:hover {
+    }
 
-        .custom .a::after {
-            content: "A";
-        }
+    .custom .button.pressed:hover,
+    .custom .face.pressed:hover {
+    }
 
-        .custom .b {
-            bottom: 0px;
-            left: 27px;
-        }
-
-        .custom .b::after {
-            content: "B";
-        }
-
-        /* No analog sticks or triggers for this controller */
-        .custom .triggers,
-        .custom .sticks {
-            display: none;
-        }
-
-        /* Player indicator styles */
-        .custom .p0 {
-            transform: rotate(0deg);
-        }
-
-        .custom .p1 {
-            transform: rotate(90deg);
-        }
-
-        .custom .p2 {
-            transform: rotate(270deg);
-        }
-
-        .custom .p3 {
-            transform: rotate(180deg);
-        }
-
-        /* Hover effects */
-        .custom .button:hover,
-        .custom .face:hover,
-        .custom .back:hover,
-        .custom .start:hover,
-        .custom .minus:hover,
-        .custom .plus:hover,
-        .custom .bumper:hover,
-        .custom .home:hover {
-            opacity: 1;
-            transform: scale(1.05);
-        }
-
-        .custom .button.pressed:hover,
-        .custom .face.pressed:hover {
-            transform: scale(0.85);
-        }
-
-        /* Demo controls */
-        .demo-controls {
-            text-align: center;
-            color: #fff;
-            margin-top: 10px; /* Reduced margin from 20px to 10px */
-            /* display: none; */ /* Uncomment this line to temporarily hide demo controls for testing */
-        }
-
-        .demo-button {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            margin: 3px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .demo-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .instructions {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            color: #fff;
-            max-width: 800px;
-            margin-top: 10px; /* Reduced margin from 30px to 10px */
-            /* display: none; */ /* Uncomment this line to temporarily hide instructions for testing */
-        }
-
-        .instructions h3 {
-            color: #6B73FF;
-            margin-bottom: 15px;
-        }
-
-        code {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .file-section {
-            margin: 10px 0; /* Reduced margin from 20px to 10px */
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            border-left: 4px solid #6B73FF;
-        }
-    </style>
-</head>
-<body>
-    <h1>🎮 8BitDo Micro Controller</h1>
-    
-    <div class="demo-container">
-        <div class="controller-demo">
-            <div class="controller custom">
-                <div class="bumpers">
-                    <div class="bumper left"></div>
-                    <div class="bumper right"></div>
-                </div>
-                
-                <div class="dpad">
-                    <div class="face up"></div>
-                    <div class="face down"></div>
-                    <div class="face left"></div>
-                    <div class="face right"></div>
-                </div>
-                
-                <div class="meta">
-                    <div class="minus"></div>
-                    <div class="plus"></div>
-                </div>
-                <div class="home"></div>
-                
-                <div class="arrows">
-                    <div class="back"></div>
-                    <div class="start"></div>
-                </div>
-                
-                <div class="abxy">
-                    <div class="button y"></div>
-                    <div class="button x"></div>
-                    <div class="button a"></div>
-                    <div class="button b"></div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="demo-controls">
-            <p>Click buttons to test the controller:</p>
-            <button class="demo-button" onclick="testButton('left', 'bumper')">L</button>
-            <button class="demo-button" onclick="testButton('right', 'bumper')">R</button>
-            <br>
-            <button class="demo-button" onclick="testButton('up')">↑</button>
-            <button class="demo-button" onclick="testButton('down')">↓</button>
-            <button class="demo-button" onclick="testButton('left')">←</button>
-            <button class="demo-button" onclick="testButton('right')">→</button>
-            <br>
-            <button class="demo-button" onclick="testButton('minus')">−</button>
-            <button class="demo-button" onclick="testButton('home')">🏠</button>
-            <button class="demo-button" onclick="testButton('plus')">+</button>
-            <br>
-            <button class="demo-button" onclick="testButton('y')">Y</button>
-            <button class="demo-button" onclick="testButton('x')">X</button>
-            <button class="demo-button" onclick="testButton('a')">A</button>
-            <button class="demo-button" onclick="testButton('b')">B</button>
-            <br>
-            <button class="demo-button" onclick="testButton('back')">★</button>
-            <button class="demo-button" onclick="testButton('start')">⚏</button>
-        </div>
+</style>
+<div class="controller custom">
+    <div class="bumpers">
+        <div class="bumper left"></div>
+        <div class="bumper right"></div>
     </div>
 
-    <div class="instructions">
-        <h3>📁 Files for Gamepad Viewer</h3>
-        <p>Updated to match the actual 8BitDo Micro controller design!</p>
-        
-        <div class="file-section">
-            <h4>🎯 Accurate Features</h4>
-            <ul>
-                <li><strong>Blue gradient body</strong> with white/silver accents</li>
-                <li><strong>Shoulder buttons (L/R)</strong> at the top</li>
-                <li><strong>White face buttons</strong> in diamond layout (Y-X-A-B)</li>
-                <li><strong>White D-pad</strong> with proper cross design</li>
-                <li><strong>Blue minus/plus buttons</strong> with home button</li>
-                <li><strong>Blue start/select buttons</strong> with star and menu icons</li>
-                <li><strong>8BitDo branding</strong> in the center</li>
-            </ul>
-        </div>
-
-        <div class="file-section">
-            <h4>📋 Setup Instructions</h4>
-            <ol>
-                <li>Copy the CSS from the embedded styles above</li>
-                <li>Save it as <code>8bitdo-micro.css</code></li>
-                <li>Upload to Gamepad Viewer's custom controller section</li>
-                <li>Select "Custom" as your controller type</li>
-            </ol>
-        </div>
-
-        <div class="file-section">
-            <h4>🎨 Design Notes</h4>
-            <p>This version accurately recreates the 8BitDo Micro's distinctive blue color scheme, button layout, and compact horizontal form factor. All buttons are positioned to match the real controller's proportions.</p>
-        </div>
+    <div class="dpad">
+        <div class="face up"></div>
+        <div class="face down"></div>
+        <div class="face left"></div>
+        <div class="face right"></div>
     </div>
 
-    <script>
-        function testButton(buttonName, buttonType = 'face') {
-            let selector = `.custom .${buttonName}`;
-            if (buttonType === 'bumper') {
-                selector = `.custom .bumper.${buttonName}`;
-            }
-            
-            const button = document.querySelector(selector);
-            if (button) {
-                button.classList.add('pressed');
-                setTimeout(() => {
-                    button.classList.remove('pressed');
-                }, 200);
-            }
-        }
+    <div class="meta">
+        <div class="minus"></div>
+        <div class="plus"></div>
+    </div>
+    <div class="home"></div>
 
-        // Add keyboard support for testing
-        document.addEventListener('keydown', (e) => {
-            const keyMap = {
-                'ArrowUp': ['up', 'face'],
-                'ArrowDown': ['down', 'face'], 
-                'ArrowLeft': ['left', 'face'],
-                'ArrowRight': ['right', 'face'],
-                'KeyZ': ['a', 'face'],
-                'KeyX': ['b', 'face'], 
-                'KeyA': ['x', 'face'],
-                'KeyS': ['y', 'face'],
-                'Enter': ['start', 'face'],
-                'Space': ['back', 'face'],
-                'Minus': ['minus', 'face'],
-                'Equal': ['plus', 'face'],
-                'KeyH': ['home', 'face'],
-                'KeyQ': ['left', 'bumper'],
-                'KeyE': ['right', 'bumper']
-            };
-            
-            if (keyMap[e.code]) {
-                const [button, type] = keyMap[e.code];
-                testButton(button, type);
-            }
-        });
-    </script>
-</body>
-</html>
+    <div class="arrows">
+        <div class="back"></div>
+        <div class="start"></div>
+    </div>
+
+    <div class="abxy">
+        <div class="button y"></div>
+        <div class="button x"></div>
+        <div class="button a"></div>
+        <div class="button b"></div>
+    </div>
+</div>
