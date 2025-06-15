@@ -552,3 +552,64 @@
                 <li><strong>8BitDo branding</strong> in the center</li>
             </ul>
         </div>
+
+        <div class="file-section">
+            <h4>📋 Setup Instructions</h4>
+            <ol>
+                <li>Copy the CSS from the embedded styles above</li>
+                <li>Save it as <code>8bitdo-micro.css</code></li>
+                <li>Upload to Gamepad Viewer's custom controller section</li>
+                <li>Select "Custom" as your controller type</li>
+            </ol>
+        </div>
+
+        <div class="file-section">
+            <h4>🎨 Design Notes</h4>
+            <p>This version accurately recreates the 8BitDo Micro's distinctive blue color scheme, button layout, and compact horizontal form factor. All buttons are positioned to match the real controller's proportions.</p>
+        </div>
+    </div>
+
+    <script>
+        function testButton(buttonName, buttonType = 'face') {
+            let selector = `.custom .${buttonName}`;
+            if (buttonType === 'bumper') {
+                selector = `.custom .bumper.${buttonName}`;
+            }
+            
+            const button = document.querySelector(selector);
+            if (button) {
+                button.classList.add('pressed');
+                setTimeout(() => {
+                    button.classList.remove('pressed');
+                }, 200);
+            }
+        }
+
+        // Add keyboard support for testing
+        document.addEventListener('keydown', (e) => {
+            const keyMap = {
+                'ArrowUp': ['up', 'face'],
+                'ArrowDown': ['down', 'face'], 
+                'ArrowLeft': ['left', 'face'],
+                'ArrowRight': ['right', 'face'],
+                'KeyZ': ['a', 'face'],
+                'KeyX': ['b', 'face'], 
+                'KeyA': ['x', 'face'],
+                'KeyS': ['y', 'face'],
+                'Enter': ['start', 'face'],
+                'Space': ['back', 'face'],
+                'Minus': ['minus', 'face'],
+                'Equal': ['plus', 'face'],
+                'KeyH': ['home', 'face'],
+                'KeyQ': ['left', 'bumper'],
+                'KeyE': ['right', 'bumper']
+            };
+            
+            if (keyMap[e.code]) {
+                const [button, type] = keyMap[e.code];
+                testButton(button, type);
+            }
+        });
+    </script>
+</body>
+</html>
