@@ -41,7 +41,7 @@
 
         /* 8BitDo Micro Controller CSS for Gamepad Viewer */
         .controller.custom {
-            height: 200px;
+            height: 220px; /* Adjusted height to better fit the full controller */
             width: 400px;
             margin: 20px auto;
             position: relative;
@@ -51,6 +51,7 @@
                 0 15px 35px rgba(0, 0, 0, 0.4),
                 inset 0 2px 5px rgba(255, 255, 255, 0.2);
             border: 3px solid #E0E0E0;
+            overflow: visible; /* Ensure content is not hidden if it extends slightly */
         }
 
         /* Add 8BitDo branding */
@@ -96,7 +97,7 @@
             position: absolute;
             width: 300px;
             height: 25px;
-            top: -12px;
+            top: -5px; /* Adjusted position to sit correctly with new controller height */
             left: 50px;
         }
 
@@ -475,13 +476,11 @@
     <div class="demo-container">
         <div class="controller-demo">
             <div class="controller custom">
-                <!-- Shoulder buttons -->
                 <div class="bumpers">
                     <div class="bumper left"></div>
                     <div class="bumper right"></div>
                 </div>
                 
-                <!-- D-Pad -->
                 <div class="dpad">
                     <div class="face up"></div>
                     <div class="face down"></div>
@@ -489,20 +488,17 @@
                     <div class="face right"></div>
                 </div>
                 
-                <!-- Minus/Plus buttons and Home -->
                 <div class="meta">
                     <div class="minus"></div>
                     <div class="plus"></div>
                 </div>
                 <div class="home"></div>
                 
-                <!-- Start/Select buttons -->
                 <div class="arrows">
                     <div class="back"></div>
                     <div class="start"></div>
                 </div>
                 
-                <!-- Face buttons -->
                 <div class="abxy">
                     <div class="button y"></div>
                     <div class="button x"></div>
