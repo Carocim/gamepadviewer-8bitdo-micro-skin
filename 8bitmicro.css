@@ -96,7 +96,7 @@
             position: absolute;
             width: 300px;
             height: 25px;
-            top: 0px;
+            top: -12px;
             left: 50px;
         }
 
@@ -535,3 +535,20 @@
             <button class="demo-button" onclick="testButton('start')">⚏</button>
         </div>
     </div>
+
+    <div class="instructions">
+        <h3>📁 Files for Gamepad Viewer</h3>
+        <p>Updated to match the actual 8BitDo Micro controller design!</p>
+        
+        <div class="file-section">
+            <h4>🎯 Accurate Features</h4>
+            <ul>
+                <li><strong>Blue gradient body</strong> with white/silver accents</li>
+                <li><strong>Shoulder buttons (L/R)</strong> at the top</li>
+                <li><strong>White face buttons</strong> in diamond layout (Y-X-A-B)</li>
+                <li><strong>White D-pad</strong> with proper cross design</li>
+                <li><strong>Blue minus/plus buttons</strong> with home button</li>
+                <li><strong>Blue start/select buttons</strong> with star and menu icons</li>
+                <li><strong>8BitDo branding</strong> in the center</li>
+            </ul>
+        </div>
