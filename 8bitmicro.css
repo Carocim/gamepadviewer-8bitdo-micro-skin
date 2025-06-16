@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>8BitDo Micro Controller</title>
     <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #2a2a2a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
         /* 8BitDo Micro Controller CSS for Gamepad Viewer */
         .controller.custom {
             height: 150px;
@@ -345,23 +356,6 @@
             display: none;
         }
 
-        /* Player indicator styles */
-        .custom .p0 {
-            transform: rotate(0deg);
-        }
-
-        .custom .p1 {
-            transform: rotate(90deg);
-        }
-
-        .custom .p2 {
-            transform: rotate(270deg);
-        }
-
-        .custom .p3 {
-            transform: rotate(180deg);
-        }
-
         /* Hover effects */
         .custom .button:hover,
         .custom .face:hover,
@@ -379,44 +373,92 @@
         .custom .face.pressed:hover {
             transform: scale(0.85);
         }
+
+        /* Interactive demo functionality */
+        .demo-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
-    <div class="controller custom">
+    <div class="demo-info">
+        Click any button to test the controller!
+    </div>
+    
+    <div class="controller custom" id="controller">
         <!-- Shoulder buttons -->
         <div class="bumpers">
-            <div class="bumper left"></div>
-            <div class="bumper right"></div>
+            <div class="bumper left" data-button="lb"></div>
+            <div class="bumper right" data-button="rb"></div>
         </div>
         
         <!-- D-Pad -->
         <div class="dpad">
-            <div class="face up"></div>
-            <div class="face down"></div>
-            <div class="face left"></div>
-            <div class="face right"></div>
+            <div class="face up" data-button="up"></div>
+            <div class="face down" data-button="down"></div>
+            <div class="face left" data-button="left"></div>
+            <div class="face right" data-button="right"></div>
         </div>
         
         <!-- Minus/Plus buttons and Home -->
         <div class="meta">
-            <div class="minus"></div>
-            <div class="plus"></div>
+            <div class="minus" data-button="minus"></div>
+            <div class="plus" data-button="plus"></div>
         </div>
-        <div class="home"></div>
+        <div class="home" data-button="home"></div>
         
         <!-- Start/Select buttons -->
         <div class="arrows">
-            <div class="back"></div>
-            <div class="start"></div>
+            <div class="back" data-button="back"></div>
+            <div class="start" data-button="start"></div>
         </div>
         
         <!-- Face buttons -->
         <div class="abxy">
-            <div class="button y"></div>
-            <div class="button x"></div>
-            <div class="button a"></div>
-            <div class="button b"></div>
+            <div class="button y" data-button="y"></div>
+            <div class="button x" data-button="x"></div>
+            <div class="button a" data-button="a"></div>
+            <div class="button b" data-button="b"></div>
         </div>
     </div>
+
+    <script>
+        // Add interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('[data-button]');
+            
+            buttons.forEach(button => {
+                button.addEventListener('mousedown', function() {
+                    this.classList.add('pressed');
+                });
+                
+                button.addEventListener('mouseup', function() {
+                    this.classList.remove('pressed');
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.classList.remove('pressed');
+                });
+                
+                // Touch support
+                button.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.classList.add('pressed');
+                });
+                
+                button.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('pressed');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
