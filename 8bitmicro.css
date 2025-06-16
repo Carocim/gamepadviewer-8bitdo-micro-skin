@@ -1,359 +1,422 @@
-<style>
-    .controller.custom {
-        height: 170px;
-        width: 280px;
-        position: relative;
-        background: linear-gradient(145deg, #6B73FF, #4C5AFF);
-        border-radius: 20px;
-        box-shadow:
-            0 10px 25px rgba(0, 0, 0, 0.4),
-            inset 0 1px 3px rgba(255, 255, 255, 0.2);
-        border: 2px solid #E0E0E0;
-        overflow: visible;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8BitDo Micro Controller</title>
+    <style>
+        /* 8BitDo Micro Controller CSS for Gamepad Viewer */
+        .controller.custom {
+            height: 150px;
+            width: 300px;
+            margin: 0 auto;
+            position: relative;
+            background: linear-gradient(145deg, #6B73FF, #4C5AFF);
+            border-radius: 25px;
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.4),
+                inset 0 2px 5px rgba(255, 255, 255, 0.2);
+            border: 2px solid #E0E0E0;
+        }
 
-    .custom.disconnected {
-        opacity: 0.4;
-        filter: grayscale(100%);
-    }
+        /* Add 8BitDo branding */
+        .controller.custom::before {
+            content: "8BitDo";
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
 
-    .custom.disconnected div {
-        display: none;
-    }
+        .controller.custom::after {
+            content: "micro";
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-weight: normal;
+            font-size: 10px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding-top: 2px;
+            width: 30px;
+            text-align: center;
+        }
 
-    .custom .bumpers {
-        position: absolute;
-        width: 210px;
-        height: 18px;
-        top: 10px;
-        left: 35px;
-    }
+        .custom.disconnected {
+            opacity: 0.4;
+            filter: grayscale(100%);
+        }
 
-    .custom .bumper {
-        width: 42px;
-        height: 18px;
-        background: linear-gradient(145deg, #E8E8E8, #D0D0D0);
-        border: 1px solid #B0B0B0;
-        border-radius: 6px 6px 2px 2px;
-        opacity: 0.7;
-        transition: all 0.15s ease;
-        cursor: pointer;
-        position: absolute;
-    }
+        .custom.disconnected div {
+            display: none;
+        }
 
-    .custom .bumper.pressed {
-        opacity: 1;
-        background: linear-gradient(145deg, #D0D0D0, #B8B8B8);
-        transform: translateY(1px);
-    }
+        /* Shoulder buttons */
+        .custom .bumpers {
+            position: absolute;
+            width: 220px;
+            height: 20px;
+            top: -10px;
+            left: 40px;
+        }
 
-    .custom .bumper.left {
-        left: 0;
-    }
+        .custom .bumper {
+            width: 45px;
+            height: 20px;
+            background: linear-gradient(145deg, #E8E8E8, #D0D0D0);
+            border: 2px solid #B0B0B0;
+            border-radius: 6px 6px 3px 3px;
+            opacity: 0.7;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            position: absolute;
+        }
 
-    .custom .bumper.right {
-        right: 0;
-    }
+        .custom .bumper.pressed {
+            opacity: 1;
+            background: linear-gradient(145deg, #D0D0D0, #B8B8B8);
+            transform: translateY(1px);
+        }
 
-    .custom .dpad {
-        position: absolute;
-        width: 50px;
-        height: 50px;
-        top: 60px;
-        left: 20px;
-    }
+        .custom .bumper.left {
+            left: 0;
+        }
 
-    .custom .face {
-        position: absolute;
-        background: linear-gradient(145deg, #F5F5F5, #E0E0E0);
-        border: 1px solid #C0C0C0;
-        opacity: 0.8;
-        transition: all 0.15s ease;
-        cursor: pointer;
-    }
+        .custom .bumper.right {
+            right: 0;
+        }
 
-    .custom .face.pressed {
-        opacity: 1;
-        background: linear-gradient(145deg, #E0E0E0, #C8C8C8);
-        transform: scale(0.95);
-    }
+        /* D-Pad */
+        .custom .dpad {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            top: 40px;
+            left: 25px;
+        }
 
-    .custom .face.up {
-        left: 17px;
-        top: 0px;
-        width: 14px;
-        height: 18px;
-        border-radius: 6px 6px 2px 2px;
-    }
+        .custom .face {
+            position: absolute;
+            background: linear-gradient(145deg, #F5F5F5, #E0E0E0);
+            border: 2px solid #C0C0C0;
+            opacity: 0.8;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
 
-    .custom .face.down {
-        left: 17px;
-        bottom: 0px;
-        width: 14px;
-        height: 18px;
-        border-radius: 2px 2px 6px 6px;
-    }
+        .custom .face.pressed {
+            opacity: 1;
+            background: linear-gradient(145deg, #E0E0E0, #C8C8C8);
+            transform: scale(0.95);
+        }
 
-    .custom .face.left {
-        width: 18px;
-        height: 14px;
-        top: 17px;
-        left: 0px;
-        border-radius: 6px 2px 2px 6px;
-    }
+        .custom .face.up {
+            left: 18px;
+            top: 0px;
+            width: 18px;
+            height: 20px;
+            border-radius: 6px 6px 3px 3px;
+        }
 
-    .custom .face.right {
-        width: 18px;
-        height: 14px;
-        top: 17px;
-        right: 0px;
-        border-radius: 2px 6px 6px 2px;
-    }
+        .custom .face.down {
+            left: 18px;
+            bottom: 0px;
+            width: 18px;
+            height: 20px;
+            border-radius: 3px 3px 6px 6px;
+        }
 
-    .custom .arrows {
-        position: absolute;
-        width: 56px;
-        height: 21px;
-        top: 120px;
-        left: 112px;
-    }
+        .custom .face.left {
+            width: 20px;
+            height: 18px;
+            top: 18px;
+            left: 0px;
+            border-radius: 6px 3px 3px 6px;
+        }
 
-    .custom .back, .custom .start {
-        width: 21px;
-        height: 21px;
-        opacity: 0.7;
-        transition: all 0.15s ease;
-        background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
-        border: 1px solid #2A35AA;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 8px;
-        color: white;
-        font-weight: bold;
-        position: absolute;
-    }
+        .custom .face.right {
+            width: 20px;
+            height: 18px;
+            top: 18px;
+            right: 0px;
+            border-radius: 3px 6px 6px 3px;
+        }
 
-    .custom .back.pressed, .custom .start.pressed {
-        opacity: 1;
-        background: linear-gradient(145deg, #3D4BCC, #2A35AA);
-        transform: scale(0.9);
-    }
+        /* Start and Select buttons */
+        .custom .arrows {
+            position: absolute;
+            width: 70px;
+            height: 25px;
+            top: 105px;
+            left: 115px;
+        }
 
-    .custom .back {
-        left: 0;
-    }
+        .custom .back, .custom .start {
+            width: 25px;
+            height: 25px;
+            opacity: 0.7;
+            transition: all 0.15s ease;
+            background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
+            border: 2px solid #2A35AA;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+            position: absolute;
+        }
 
-    .custom .back::after {
-        content: "★";
-        font-size: 10px;
-    }
+        .custom .back.pressed, .custom .start.pressed {
+            opacity: 1;
+            background: linear-gradient(145deg, #3D4BCC, #2A35AA);
+            transform: scale(0.9);
+        }
 
-    .custom .start {
-        right: 0;
-    }
+        .custom .back {
+            left: 0;
+        }
 
-    .custom .start::after {
-        content: "⚏";
-        font-size: 8px;
-    }
+        .custom .back::after {
+            content: "★";
+            font-size: 12px;
+        }
 
-    .custom .meta {
-        position: absolute;
-        width: 84px;
-        height: 18px;
-        top: 50px;
-        left: 98px;
-    }
+        .custom .start {
+            right: 0;
+        }
 
-    .custom .minus, .custom .plus {
-        width: 18px;
-        height: 18px;
-        background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
-        border: 1px solid #2A35AA;
-        border-radius: 50%;
-        opacity: 0.7;
-        transition: all 0.15s ease;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        font-size: 11px;
-        position: absolute;
-    }
+        .custom .start::after {
+            content: "⚏";
+            font-size: 10px;
+        }
 
-    .custom .minus.pressed, .custom .plus.pressed {
-        opacity: 1;
-        background: linear-gradient(145deg, #3D4BCC, #2A35AA);
-        transform: scale(0.9);
-    }
+        /* Minus and Plus buttons */
+        .custom .meta {
+            position: absolute;
+            width: 90px;
+            height: 20px;
+            top: 30px;
+            left: 105px;
+        }
 
-    .custom .minus {
-        left: 0;
-    }
+        .custom .minus, .custom .plus {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
+            border: 2px solid #2A35AA;
+            border-radius: 50%;
+            opacity: 0.7;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            position: absolute;
+        }
 
-    .custom .minus::after {
-        content: "−";
-    }
+        .custom .minus.pressed, .custom .plus.pressed {
+            opacity: 1;
+            background: linear-gradient(145deg, #3D4BCC, #2A35AA);
+            transform: scale(0.9);
+        }
 
-    .custom .plus {
-        right: 0;
-    }
+        .custom .minus {
+            left: 0;
+        }
 
-    .custom .plus::after {
-        content: "+";
-    }
+        .custom .minus::after {
+            content: "−";
+        }
 
-    .custom .home {
-        position: absolute;
-        width: 6px;
-        height: 6px;
-        top: 55px;
-        left: 137px;
-        background: #2A35AA;
-        border-radius: 50%;
-        opacity: 0.8;
-        transition: all 0.15s ease;
-        cursor: pointer;
-    }
+        .custom .plus {
+            right: 0;
+        }
 
-    .custom .home.pressed {
-        opacity: 1;
-        background: #1A2577;
-        transform: scale(1.2);
-    }
+        .custom .plus::after {
+            content: "+";
+        }
 
-    .custom .abxy {
-        position: absolute;
-        width: 63px;
-        height: 63px;
-        top: 65px;
-        left: 195px;
-    }
+        /* Home button */
+        .custom .home {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            top: 37px;
+            left: 147px;
+            background: #2A35AA;
+            border-radius: 50%;
+            opacity: 0.8;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
 
-    .custom .button {
-        position: absolute;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        background: linear-gradient(145deg, #F8F8F8, #E8E8E8);
-        border: 1px solid #D0D0D0;
-        opacity: 0.8;
-        transition: all 0.15s ease;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 11px;
-        color: #666;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
+        .custom .home.pressed {
+            opacity: 1;
+            background: #1A2577;
+            transform: scale(1.2);
+        }
 
-    .custom .button.pressed {
-        opacity: 1;
-        background: linear-gradient(145deg, #E0E0E0, #D0D0D0);
-        transform: scale(0.9);
-        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
-    }
+        /* Face buttons (A, B, X, Y) */
+        .custom .abxy {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            top: 35px;
+            left: 205px;
+        }
 
-    .custom .y {
-        top: 0px;
-        left: 19px;
-    }
+        .custom .button {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #F8F8F8, #E8E8E8);
+            border: 2px solid #D0D0D0;
+            opacity: 0.8;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            color: #666;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    .custom .y::after {
-        content: "Y";
-    }
+        .custom .button.pressed {
+            opacity: 1;
+            background: linear-gradient(145deg, #E0E0E0, #D0D0D0);
+            transform: scale(0.9);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
 
-    .custom .x {
-        top: 19px;
-        left: 0px;
-    }
+        .custom .y {
+            top: 0px;
+            left: 21px;
+        }
 
-    .custom .x::after {
-        content: "X";
-    }
+        .custom .y::after {
+            content: "Y";
+        }
 
-    .custom .a {
-        top: 19px;
-        right: 0px;
-    }
+        .custom .x {
+            top: 21px;
+            left: 0px;
+        }
 
-    .custom .a::after {
-        content: "A";
-    }
+        .custom .x::after {
+            content: "X";
+        }
 
-    .custom .b {
-        bottom: 0px;
-        left: 19px;
-    }
+        .custom .a {
+            top: 21px;
+            right: 0px;
+        }
 
-    .custom .b::after {
-        content: "B";
-    }
+        .custom .a::after {
+            content: "A";
+        }
 
-    .custom .triggers,
-    .custom .sticks {
-        display: none;
-    }
+        .custom .b {
+            bottom: 0px;
+            left: 21px;
+        }
 
-    .custom .p0 { transform: rotate(0deg); }
-    .custom .p1 { transform: rotate(90deg); }
-    .custom .p2 { transform: rotate(270deg); }
-    .custom .p3 { transform: rotate(180deg); }
+        .custom .b::after {
+            content: "B";
+        }
 
-    .custom .button:hover,
-    .custom .face:hover,
-    .custom .back:hover,
-    .custom .start:hover,
-    .custom .minus:hover,
-    .custom .plus:hover,
-    .custom .bumper:hover,
-    .custom .home:hover {
-    }
+        /* No analog sticks or triggers for this controller */
+        .custom .triggers,
+        .custom .sticks {
+            display: none;
+        }
 
-    .custom .button.pressed:hover,
-    .custom .face.pressed:hover {
-    }
+        /* Player indicator styles */
+        .custom .p0 {
+            transform: rotate(0deg);
+        }
 
-</style>
-<div class="controller custom">
-    <div class="bumpers">
-        <div class="bumper left"></div>
-        <div class="bumper right"></div>
+        .custom .p1 {
+            transform: rotate(90deg);
+        }
+
+        .custom .p2 {
+            transform: rotate(270deg);
+        }
+
+        .custom .p3 {
+            transform: rotate(180deg);
+        }
+
+        /* Hover effects */
+        .custom .button:hover,
+        .custom .face:hover,
+        .custom .back:hover,
+        .custom .start:hover,
+        .custom .minus:hover,
+        .custom .plus:hover,
+        .custom .bumper:hover,
+        .custom .home:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .custom .button.pressed:hover,
+        .custom .face.pressed:hover {
+            transform: scale(0.85);
+        }
+    </style>
+</head>
+<body>
+    <div class="controller custom">
+        <!-- Shoulder buttons -->
+        <div class="bumpers">
+            <div class="bumper left"></div>
+            <div class="bumper right"></div>
+        </div>
+        
+        <!-- D-Pad -->
+        <div class="dpad">
+            <div class="face up"></div>
+            <div class="face down"></div>
+            <div class="face left"></div>
+            <div class="face right"></div>
+        </div>
+        
+        <!-- Minus/Plus buttons and Home -->
+        <div class="meta">
+            <div class="minus"></div>
+            <div class="plus"></div>
+        </div>
+        <div class="home"></div>
+        
+        <!-- Start/Select buttons -->
+        <div class="arrows">
+            <div class="back"></div>
+            <div class="start"></div>
+        </div>
+        
+        <!-- Face buttons -->
+        <div class="abxy">
+            <div class="button y"></div>
+            <div class="button x"></div>
+            <div class="button a"></div>
+            <div class="button b"></div>
+        </div>
     </div>
-
-    <div class="dpad">
-        <div class="face up"></div>
-        <div class="face down"></div>
-        <div class="face left"></div>
-        <div class="face right"></div>
-    </div>
-
-    <div class="meta">
-        <div class="minus"></div>
-        <div class="plus"></div>
-    </div>
-    <div class="home"></div>
-
-    <div class="arrows">
-        <div class="back"></div>
-        <div class="start"></div>
-    </div>
-
-    <div class="abxy">
-        <div class="button y"></div>
-        <div class="button x"></div>
-        <div class="button a"></div>
-        <div class="button b"></div>
-    </div>
-</div>
+</body>
+</html>
