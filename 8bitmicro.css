@@ -7,8 +7,8 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
-            background: #2a2a2a;
+            padding: 0;
+            background: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,21 +16,16 @@
             font-family: Arial, sans-serif;
         }
 
-        /* 8BitDo Micro Controller CSS for Gamepad Viewer */
         .controller.custom {
             height: 150px;
             width: 300px;
-            margin: 0 auto;
             position: relative;
-            background: linear-gradient(145deg, #6B73FF, #4C5AFF) !important;
+            background: linear-gradient(145deg, #6B73FF, #4C5AFF);
             border-radius: 25px;
-            box-shadow: 
-                0 8px 20px rgba(0, 0, 0, 0.4),
-                inset 0 2px 5px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.2);
             border: 2px solid #E0E0E0;
         }
 
-        /* Add 8BitDo branding */
         .controller.custom::before {
             content: "8BitDo";
             position: absolute;
@@ -59,17 +54,7 @@
             text-align: center;
         }
 
-        .custom.disconnected {
-            opacity: 0.4;
-            filter: grayscale(100%);
-        }
-
-        .custom.disconnected div {
-            display: none;
-        }
-
-        /* Shoulder buttons */
-        .custom .bumpers {
+        .bumpers {
             position: absolute;
             width: 220px;
             height: 20px;
@@ -77,7 +62,7 @@
             left: 40px;
         }
 
-        .custom .bumper {
+        .bumper {
             width: 45px;
             height: 20px;
             background: linear-gradient(145deg, #E8E8E8, #D0D0D0);
@@ -89,22 +74,21 @@
             position: absolute;
         }
 
-        .custom .bumper.pressed {
+        .bumper.pressed {
             opacity: 1;
             background: linear-gradient(145deg, #D0D0D0, #B8B8B8);
             transform: translateY(1px);
         }
 
-        .custom .bumper.left {
+        .bumper.left {
             left: 0;
         }
 
-        .custom .bumper.right {
+        .bumper.right {
             right: 0;
         }
 
-        /* D-Pad */
-        .custom .dpad {
+        .dpad {
             position: absolute;
             width: 55px;
             height: 55px;
@@ -112,7 +96,7 @@
             left: 25px;
         }
 
-        .custom .face {
+        .face {
             position: absolute;
             background: linear-gradient(145deg, #F5F5F5, #E0E0E0);
             border: 2px solid #C0C0C0;
@@ -121,13 +105,13 @@
             cursor: pointer;
         }
 
-        .custom .face.pressed {
+        .face.pressed {
             opacity: 1;
             background: linear-gradient(145deg, #E0E0E0, #C8C8C8);
             transform: scale(0.95);
         }
 
-        .custom .face.up {
+        .face.up {
             left: 18px;
             top: 0px;
             width: 18px;
@@ -135,7 +119,7 @@
             border-radius: 6px 6px 3px 3px;
         }
 
-        .custom .face.down {
+        .face.down {
             left: 18px;
             bottom: 0px;
             width: 18px;
@@ -143,7 +127,7 @@
             border-radius: 3px 3px 6px 6px;
         }
 
-        .custom .face.left {
+        .face.left {
             width: 20px;
             height: 18px;
             top: 18px;
@@ -151,7 +135,7 @@
             border-radius: 6px 3px 3px 6px;
         }
 
-        .custom .face.right {
+        .face.right {
             width: 20px;
             height: 18px;
             top: 18px;
@@ -159,8 +143,7 @@
             border-radius: 3px 6px 6px 3px;
         }
 
-        /* Start and Select buttons */
-        .custom .arrows {
+        .arrows {
             position: absolute;
             width: 70px;
             height: 25px;
@@ -168,7 +151,7 @@
             left: 115px;
         }
 
-        .custom .back, .custom .start {
+        .back, .start {
             width: 25px;
             height: 25px;
             opacity: 0.7;
@@ -186,32 +169,31 @@
             position: absolute;
         }
 
-        .custom .back.pressed, .custom .start.pressed {
+        .back.pressed, .start.pressed {
             opacity: 1;
             background: linear-gradient(145deg, #3D4BCC, #2A35AA);
             transform: scale(0.9);
         }
 
-        .custom .back {
+        .back {
             left: 0;
         }
 
-        .custom .back::after {
+        .back::after {
             content: "★";
             font-size: 12px;
         }
 
-        .custom .start {
+        .start {
             right: 0;
         }
 
-        .custom .start::after {
+        .start::after {
             content: "⚏";
             font-size: 10px;
         }
 
-        /* Minus and Plus buttons */
-        .custom .meta {
+        .meta {
             position: absolute;
             width: 90px;
             height: 20px;
@@ -219,7 +201,7 @@
             left: 105px;
         }
 
-        .custom .minus, .custom .plus {
+        .minus, .plus {
             width: 20px;
             height: 20px;
             background: linear-gradient(145deg, #4C5AFF, #3D4BCC);
@@ -237,30 +219,29 @@
             position: absolute;
         }
 
-        .custom .minus.pressed, .custom .plus.pressed {
+        .minus.pressed, .plus.pressed {
             opacity: 1;
             background: linear-gradient(145deg, #3D4BCC, #2A35AA);
             transform: scale(0.9);
         }
 
-        .custom .minus {
+        .minus {
             left: 0;
         }
 
-        .custom .minus::after {
+        .minus::after {
             content: "−";
         }
 
-        .custom .plus {
+        .plus {
             right: 0;
         }
 
-        .custom .plus::after {
+        .plus::after {
             content: "+";
         }
 
-        /* Home button */
-        .custom .home {
+        .home {
             position: absolute;
             width: 6px;
             height: 6px;
@@ -273,14 +254,13 @@
             cursor: pointer;
         }
 
-        .custom .home.pressed {
+        .home.pressed {
             opacity: 1;
             background: #1A2577;
             transform: scale(1.2);
         }
 
-        /* Face buttons (A, B, X, Y) */
-        .custom .abxy {
+        .abxy {
             position: absolute;
             width: 70px;
             height: 70px;
@@ -288,7 +268,7 @@
             left: 205px;
         }
 
-        .custom .button {
+        .button {
             position: absolute;
             width: 28px;
             height: 28px;
@@ -307,156 +287,99 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .custom .button.pressed {
+        .button.pressed {
             opacity: 1;
             background: linear-gradient(145deg, #E0E0E0, #D0D0D0);
             transform: scale(0.9);
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .custom .y {
+        .y {
             top: 0px;
             left: 21px;
         }
 
-        .custom .y::after {
+        .y::after {
             content: "Y";
         }
 
-        .custom .x {
+        .x {
             top: 21px;
             left: 0px;
         }
 
-        .custom .x::after {
+        .x::after {
             content: "X";
         }
 
-        .custom .a {
+        .a {
             top: 21px;
             right: 0px;
         }
 
-        .custom .a::after {
+        .a::after {
             content: "A";
         }
 
-        .custom .b {
+        .b {
             bottom: 0px;
             left: 21px;
         }
 
-        .custom .b::after {
+        .b::after {
             content: "B";
-        }
-
-        /* No analog sticks or triggers for this controller */
-        .custom .triggers,
-        .custom .sticks {
-            display: none;
-        }
-
-        /* Hover effects */
-        .custom .button:hover,
-        .custom .face:hover,
-        .custom .back:hover,
-        .custom .start:hover,
-        .custom .minus:hover,
-        .custom .plus:hover,
-        .custom .bumper:hover,
-        .custom .home:hover {
-            opacity: 1;
-            transform: scale(1.05);
-        }
-
-        .custom .button.pressed:hover,
-        .custom .face.pressed:hover {
-            transform: scale(0.85);
-        }
-
-        /* Interactive demo functionality */
-        .demo-info {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            font-size: 14px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="demo-info">
-        Click any button to test the controller!
-    </div>
-    
-    <div class="controller custom" id="controller">
-        <!-- Shoulder buttons -->
+    <div class="controller custom">
         <div class="bumpers">
-            <div class="bumper left" data-button="lb"></div>
-            <div class="bumper right" data-button="rb"></div>
+            <div class="bumper left"></div>
+            <div class="bumper right"></div>
         </div>
         
-        <!-- D-Pad -->
         <div class="dpad">
-            <div class="face up" data-button="up"></div>
-            <div class="face down" data-button="down"></div>
-            <div class="face left" data-button="left"></div>
-            <div class="face right" data-button="right"></div>
+            <div class="face up"></div>
+            <div class="face down"></div>
+            <div class="face left"></div>
+            <div class="face right"></div>
         </div>
         
-        <!-- Minus/Plus buttons and Home -->
         <div class="meta">
-            <div class="minus" data-button="minus"></div>
-            <div class="plus" data-button="plus"></div>
+            <div class="minus"></div>
+            <div class="plus"></div>
         </div>
-        <div class="home" data-button="home"></div>
+        <div class="home"></div>
         
-        <!-- Start/Select buttons -->
         <div class="arrows">
-            <div class="back" data-button="back"></div>
-            <div class="start" data-button="start"></div>
+            <div class="back"></div>
+            <div class="start"></div>
         </div>
         
-        <!-- Face buttons -->
         <div class="abxy">
-            <div class="button y" data-button="y"></div>
-            <div class="button x" data-button="x"></div>
-            <div class="button a" data-button="a"></div>
-            <div class="button b" data-button="b"></div>
+            <div class="button y"></div>
+            <div class="button x"></div>
+            <div class="button a"></div>
+            <div class="button b"></div>
         </div>
     </div>
 
     <script>
-        // Add interactive functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const buttons = document.querySelectorAll('[data-button]');
+        const buttons = document.querySelectorAll('.button, .face, .back, .start, .minus, .plus, .bumper, .home');
+        
+        buttons.forEach(button => {
+            button.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                this.classList.add('pressed');
+            });
             
-            buttons.forEach(button => {
-                button.addEventListener('mousedown', function() {
-                    this.classList.add('pressed');
-                });
-                
-                button.addEventListener('mouseup', function() {
-                    this.classList.remove('pressed');
-                });
-                
-                button.addEventListener('mouseleave', function() {
-                    this.classList.remove('pressed');
-                });
-                
-                // Touch support
-                button.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    this.classList.add('pressed');
-                });
-                
-                button.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('pressed');
-                });
+            button.addEventListener('mouseup', function(e) {
+                e.stopPropagation();
+                this.classList.remove('pressed');
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.classList.remove('pressed');
             });
         });
     </script>
